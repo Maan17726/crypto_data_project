@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bitcoin Forecast</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-900 text-white">
+  <header class="bg-gradient-to-r from-purple-700 to-pink-600 py-6 shadow-lg">
+    <h1 class="text-center text-3xl font-bold">Bitcoin Price Forecast</h1>
+  </header>
+
+  <main class="p-8 space-y-10">
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Predicted vs Actual Prices</h2>
+      <canvas id="forecastChart"></canvas>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Insights & Model Summary</h2>
+      <p class="text-gray-300 leading-7">
+        {{ model_explanation }}<br><br>
+        Our goal is to anticipate the direction of Bitcoin prices using historical trends and linear modeling. While Linear Regression provides a simple view, it gives a foundation for smarter predictions.<br><br>
+        R² Score: <span class="font-bold text-green-400">{{ r2_score }}</span><br>
+        Mean Absolute Error: <span class="font-bold text-red-400">{{ mae }}</span><br><br>
+        {{ improvement_note }}
+      </p>
+    </section>
+
+    <section class="text-center">
+      <a href="/download" class="mt-6 inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg">Download Forecast Data</a>
+    </section>
+  </main>
+
+  <script>
+    const labels = {{ labels|safe }};
+    const actualPrices = {{ actual_prices|safe }};
+    const predictedPrices = {{ predicted_prices|safe }};
+
+    new Chart(document.getElementById('forecastChart'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Actual Price',
+            data: actualPrices,
+            borderColor: 'green',
+            fill: false
+          },
+          {
+            label: 'Predicted Price',
+            data: predictedPrices,
+            borderColor: 'red',
+            borderDash: [5, 5],
+            fill: false
+          }
+        ]
+      }
+    });
+  </script>
+</body>
+</html>

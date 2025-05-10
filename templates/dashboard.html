@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bitcoin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-900 text-white">
+  <header class="bg-gradient-to-r from-blue-700 to-indigo-800 py-6 shadow-md">
+    <h1 class="text-center text-3xl font-bold">Bitcoin Data Dashboard</h1>
+  </header>
+
+  <main class="p-8 space-y-12">
+    <section>
+      <h2 class="text-2xl font-semibold mb-2">Price Over Time</h2>
+      <p class="text-gray-400 mb-4">{{ explain_price }}</p>
+      <canvas id="priceChart"></canvas>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold mb-2">Volume vs Market Cap</h2>
+      <p class="text-gray-400 mb-4">{{ explain_volume }}</p>
+      <canvas id="volumeMarketCapChart"></canvas>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold mb-2">24h Price Change</h2>
+      <p class="text-gray-400 mb-4">{{ explain_change }}</p>
+      <canvas id="priceChangeChart"></canvas>
+    </section>
+
+    <section class="text-center">
+      <a href="/download" class="mt-6 inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg">Download Data (CSV)</a>
+    </section>
+  </main>
+
+  <script>
+    const priceData = {{ price_data | safe }};
+    const labels = {{ labels | safe }};
+    const volumeData = {{ volume_data | safe }};
+    const marketCapData = {{ market_cap_data | safe }};
+    const priceChangeData = {{ price_change_24h | safe }};
+
+    new Chart(document.getElementById('priceChart'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'BTC Price',
+          data: priceData,
+          borderColor: 'gold',
+          backgroundColor: 'rgba(255,215,0,0.1)',
+          fill: true,
+        }]
+      }
+    });
+
+    new Chart(document.getElementById('volumeMarketCapChart'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Volume',
+            data: volumeData,
+            backgroundColor: 'rgba(59,130,246,0.7)'
+          },
+          {
+            label: 'Market Cap',
+            data: marketCapData,
+            backgroundColor: 'rgba(139,92,246,0.7)'
+          }
+        ]
+      }
+    });
+
+    new Chart(document.getElementById('priceChangeChart'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '24h Change %',
+          data: priceChangeData,
+          borderColor: 'orange',
+          fill: false
+        }]
+      }
+    });
+  </script>
+</body>
+</html>
